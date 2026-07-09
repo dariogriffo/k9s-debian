@@ -84,7 +84,7 @@ build_architecture() {
     declare -a arr=("bookworm" "trixie" "forky" "sid")
 
     for dist in "${arr[@]}"; do
-        FULL_VERSION="$k9s_VERSION-${BUILD_VERSION}+${dist}_${build_arch}"
+        FULL_VERSION="$k9s_VERSION-${BUILD_VERSION}~${dist}_${build_arch}"
         echo "  Building $FULL_VERSION"
 
         if ! docker build . -t "k9s-$dist-$build_arch" \
