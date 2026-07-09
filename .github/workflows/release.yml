@@ -1,0 +1,95 @@
+name: Build k9s for Debian
+
+on:
+  workflow_dispatch:
+    inputs:
+      k9s_version:
+        description: The version of k9s to build.
+        type: string
+        required: true
+      build_version:
+        description: The build version.
+        type: string
+        required: true
+      architecture:
+        description: Architecture to build (amd64, arm64, armhf, ppc64el, s390x, or 'all' for all architectures)
+        type: choice
+        default: 'all'
+        options:
+          - 'all'
+          - 'amd64'
+          - 'arm64'
+          - 'armhf'
+          - 'ppc64el'
+          - 's390x'
+
+permissions:
+  contents: write
+
+jobs:
+  build-k9s:
+    name: Build Binary Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout k9s-debian
+        uses: actions/checkout@v4
+
+      - name: Build k9s
+        run: ./build_debian.sh ${{ inputs.k9s_version }} ${{ inputs.build_version }} ${{ inputs.architecture }} && ./build_ubuntu.sh ${{ inputs.k9s_version }} ${{ inputs.build_version }} ${{ inputs.architecture }}
+
+      - name: Upload Binary Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-artifact
+          path: k9s_*.deb
+
+  build-src:
+    name: Build Source Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout k9s-debian
+        uses: actions/checkout@v4
+
+      - name: Install dpkg-dev
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends dpkg-dev devscripts wget ca-certificates
+
+      - name: Build source packages
+        run: ./build_src.sh ${{ inputs.k9s_version }} ${{ inputs.build_version }}
+
+      - name: Upload Source Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-artifact
+          path: |
+            k9s_*.dsc
+            k9s_*.orig.tar.gz
+            k9s_*.debian.tar.xz
+
+  release-k9s:
+    name: Release k9s for Debian
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [build-k9s, build-src]
+    steps:
+      - name: Download Binary Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: binary-artifact
+
+      - name: Download Source Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: source-artifact
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          files: |
+            k9s_*.deb
+            k9s_*.dsc
+            k9s_*.orig.tar.gz
+            k9s_*.debian.tar.xz
+          name: ${{ inputs.k9s_version }}+${{ inputs.build_version }}
+          tag_name: ${{ inputs.k9s_version }}+${{ inputs.build_version }}
+          fail_on_unmatched_files: true
