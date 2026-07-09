@@ -1,0 +1,9 @@
+Section: utils
+Priority: optional
+Maintainer: Dario Griffo <dariogriffo@gmail.com>
+Homepage: https://github.com/derailed/k9s
+Package: k9s
+Version: k9s_VERSION-BUILD_VERSION+DIST
+Architecture: SUPPORTED_ARCHITECTURES
+Description: Kubernetes CLI to manage your clusters in style.
+

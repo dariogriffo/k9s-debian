@@ -1,0 +1,18 @@
+Source: k9s
+Section: utils
+Priority: optional
+Maintainer: Dario Griffo <dariogriffo@gmail.com>
+Build-Depends: debhelper-compat (= 13), wget, ca-certificates
+Standards-Version: 4.6.2
+Homepage: https://github.com/derailed/k9s
+Rules-Requires-Root: no
+
+Package: k9s
+Architecture: amd64 arm64 armhf ppc64el s390x
+Depends: ${misc:Depends}
+Description: Kubernetes CLI to manage your clusters in style
+ K9s provides a terminal UI to interact with your Kubernetes clusters.
+ The aim of this project is to make it easier to navigate, observe and
+ manage your applications in the wild. K9s continually watches Kubernetes
+ for changes and offers subsequent commands to interact with your
+ observed resources.

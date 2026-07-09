@@ -1,0 +1,41 @@
+#!/usr/bin/make -f
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+K9S_VERSION := $(shell dpkg-parsechangelog -S Version | sed 's/[-~].*//')
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+
+override_dh_auto_build:
+	@arch="$(DEB_HOST_ARCH)"; \
+	case "$$arch" in \
+		amd64)   K9S_RELEASE="Linux_amd64" ;; \
+		arm64)   K9S_RELEASE="Linux_arm64" ;; \
+		armhf)   K9S_RELEASE="Linux_armv7" ;; \
+		ppc64el) K9S_RELEASE="Linux_ppc64le" ;; \
+		s390x)   K9S_RELEASE="Linux_s390x" ;; \
+		*) echo "Unsupported architecture: $$arch"; exit 1 ;; \
+	esac; \
+	echo "Downloading k9s_$$K9S_RELEASE for v$(K9S_VERSION)..."; \
+	wget -q "https://github.com/derailed/k9s/releases/download/v$(K9S_VERSION)/k9s_$$K9S_RELEASE.tar.gz"; \
+	mkdir -p "k9s_$$K9S_RELEASE"; \
+	tar -xf "k9s_$$K9S_RELEASE.tar.gz" -C "k9s_$$K9S_RELEASE"; \
+	rm -f "k9s_$$K9S_RELEASE.tar.gz"; \
+	echo "k9s_$$K9S_RELEASE" > .k9s_release_name
+
+override_dh_auto_install:
+	@K9S_RELEASE=$$(cat .k9s_release_name); \
+	install -D -m 755 "$$K9S_RELEASE/k9s" debian/k9s/usr/bin/k9s
+
+override_dh_auto_test:
+
+override_dh_auto_clean:
+	@if [ -f .k9s_release_name ]; then \
+		K9S_RELEASE=$$(cat .k9s_release_name); \
+		rm -rf "$$K9S_RELEASE" .k9s_release_name || true; \
+	fi
+
+override_dh_strip:
+
+override_dh_shlibdeps:
