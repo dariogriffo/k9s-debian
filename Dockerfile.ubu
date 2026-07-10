@@ -14,6 +14,8 @@ RUN mkdir -p /output/DEBIAN
 
 COPY ${K9S_RELEASE}/k9s /output/usr/bin/k9s
 COPY output/DEBIAN/control /output/DEBIAN/
+COPY output/DEBIAN/postinst /output/DEBIAN/postinst
+RUN chmod 755 /output/DEBIAN/postinst
 COPY output/copyright /output/usr/share/doc/k9s/
 COPY output/changelog.Debian /output/usr/share/doc/k9s/
 COPY output/README.md /output/usr/share/doc/k9s/
