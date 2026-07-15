@@ -34,6 +34,11 @@ jobs:
       - name: Checkout k9s-debian
         uses: actions/checkout@v4
 
+      - name: Validate upstream license permits paid distribution
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./validate_license.sh ${{ inputs.k9s_version }}
+
       - name: Build k9s
         run: ./build_debian.sh ${{ inputs.k9s_version }} ${{ inputs.build_version }} ${{ inputs.architecture }} && ./build_ubuntu.sh ${{ inputs.k9s_version }} ${{ inputs.build_version }} ${{ inputs.architecture }}
 
