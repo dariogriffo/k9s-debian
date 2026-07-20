@@ -9,7 +9,7 @@ This repository contains build scripts to produce the _unofficial_ Debian packag
 (.deb) for [k9s](https://github.com/derailed/k9s) hosted at [deb.griffo.io](https://deb.griffo.io)
 
 <p align="center">
-⭐⭐⭐ Love using k9s on Debian? Show your support by starring this repo or [subscribing](https://buy.stripe.com/aFa28q8hr0lRdlm4a2enS01) — access to this repository requires a yearly subscription. ⭐⭐⭐
+⭐⭐⭐ Love using k9s on Debian? Show your support by starring this repo or [subscribing](https://buy.stripe.com/aFa28q8hr0lRdlm4a2enS01) — from 1 October 2026, apt access requires a yearly subscription. ⭐⭐⭐
 </p>
 
 Currently supported Debian distros are:
@@ -29,6 +29,11 @@ install on Debian. If you're looking for the k9s source code, see
 📖 **Step-by-step install guide:** [Debian](https://deb.griffo.io/install-latest-k9s-in-debian.html) · [Ubuntu](https://deb.griffo.io/install-latest-k9s-in-ubuntu.html)
 
 ### The Debian way
+
+> ⚠️ **From 1 October 2026, apt access requires a yearly subscription**
+> ([deb.griffo.io](https://deb.griffo.io)). To use this tool for free, download
+> the .deb from the [Releases](https://github.com/dariogriffo/k9s-debian/releases) page
+> and install it manually (see below).
 
 ```sh
 sudo install -d -m 0755 /etc/apt/keyrings
